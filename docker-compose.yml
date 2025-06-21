@@ -1,0 +1,44 @@
+services:
+
+  oracle:
+    container_name: oracle
+    image: gvenzl/oracle-free:latest
+    ports:
+      - "1521:1521"
+    environment:
+      ORACLE_PASSWORD: swg
+      APP_USER: swg
+      APP_USER_PASSWORD: swg
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+      start_interval: 5s
+    volumes:
+      - oradata:/opt/oracle/oradata
+
+  swg:
+    container_name: swg
+    depends_on:
+      oracle:
+        condition: service_healthy
+    build:
+      context: .
+    ports:
+      - "44451-44453:44451-44453/tcp"
+      - "44462-44464:44462-44464/tcp"
+      - "44451-44453:44451-44453/udp"
+      - "44462-44464:44462-44464/udp"
+    environment:
+      DB_HOST: oracle
+      DB_PORT: 1521
+      DB_USER: swg
+      ORACLE_PASSWORD: swg
+      DB_PASSWORD: swg
+    tty: true
+    stdin_open: true
+
+volumes:
+  oradata:
