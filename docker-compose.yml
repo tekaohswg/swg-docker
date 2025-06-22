@@ -39,6 +39,9 @@ services:
       DB_PASSWORD: swg
     tty: true
     stdin_open: true
+    volumes:
+      - swg-main:/swg-main
 
 volumes:
   oradata:
+  swg-main:
