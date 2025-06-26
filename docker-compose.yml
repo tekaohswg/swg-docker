@@ -2,6 +2,7 @@ services:
 
   oracle:
     container_name: oracle
+    hostname: oracle
     image: gvenzl/oracle-free:latest
     ports:
       - "1521:1521"
@@ -21,6 +22,7 @@ services:
 
   swg:
     container_name: swg
+    hostname: swg
     depends_on:
       oracle:
         condition: service_healthy
