@@ -21,10 +21,14 @@ RUN apt-get install -y \
     libxml2-dev:i386 \
     openjdk-11-jdk:i386 \
     psmisc \
+    supervisor \
     wget
 
 RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /var/log/supervisor
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 RUN wget https://github.com/SWG-Source/releases/releases/download/instantclients/oracle-instantclient18.3-basiclite-18.3.0.0.0-1.i386.rpm
 RUN wget https://github.com/SWG-Source/releases/releases/download/instantclients/oracle-instantclient18.3-devel-18.3.0.0.0-1.i386.rpm
@@ -47,4 +51,4 @@ RUN ant git_update_submods
 RUN echo "db_service = FREEPDB1" > local.properties && \
     echo "dbip = oracle" >> local.properties
 
-CMD ["tail", "-f", "/dev/null"]
+CMD ["/usr/bin/supervisord", "-n"]
